@@ -128,4 +128,11 @@ export default {
   width: 90%;
   font-size: 1rem;
 }
+@media (min-device-width: 360px) and (max-device-width: 740px) {
+  .payment-methods-container {
+    width: 100%;
+    padding: 4px 10px;
+    text-align: left;
+  }
+}
 </style>

@@ -107,4 +107,22 @@ export default {
   width: 120%;
   margin-top: 20%;
 }
+@media (min-device-width: 360px) and (max-device-width: 740px) {
+  .buy-page-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 3%;
+  }
+
+  .buy-page-content :nth-child(1) {
+    order: 1;
+  }
+  .buy-page-content :nth-child(2) {
+    order: 3;
+  }
+  .buy-page-content :nth-child(3) {
+    order: 2;
+  }
+}
 </style>

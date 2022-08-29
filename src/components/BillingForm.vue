@@ -97,5 +97,14 @@ export default {
 .checkbox-container input[type="checkbox"] {
   outline: #c1cbd6;
 }
+
+@media (min-device-width: 360px) and (max-device-width: 740px) {
+  .billing-form-container {
+    width: 100%;
+    background-color: white;
+    box-shadow: 1px 1px 4px;
+    padding: 4px 10px;
+    text-align: left;
+  }
+}
 </style>
->

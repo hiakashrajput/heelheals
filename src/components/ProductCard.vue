@@ -148,7 +148,7 @@ export default {
   line-height: 1.5rem;
 }
 
-.action-button {
+.product-content-container .action-button {
   font-size: 1rem;
   padding: 10px 18px;
   width: fit-content;

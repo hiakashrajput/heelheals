@@ -160,9 +160,17 @@ a {
   margin-bottom: 20px;
 }
 .pay-button {
+  background-color: #006bd7;
   color: white;
   font-size: 1.3rem;
   width: 100%;
+}
+@media (min-device-width: 360px) and (max-device-width: 740px) {
+  .bill-summary-container {
+    width: 100%;
+    padding: 4px 10px;
+    text-align: left;
+  }
 }
 </style>
 >

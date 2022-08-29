@@ -122,6 +122,7 @@ export default {
   }
   .hero-product-image-container {
     width: 100%;
+    margin-bottom: 15%;
   }
   .colored-container {
     width: 100%;
