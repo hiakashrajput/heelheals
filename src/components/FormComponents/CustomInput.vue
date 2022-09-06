@@ -1,13 +1,20 @@
+//* This is a custom input with predefined design. It uses with extra props:
+validationRules takes rules for validation of input *//
+
 <template>
-  <div class="form-group">
+  <div class="form-group" :class="errors.first(inputName) ? 'input-error' : ''">
     <label>{{ this.CustomLabel }}</label>
     <textarea
       v-if="inputType == 'textarea'"
       :type="inputType"
       :name="inputName"
       class="form-control input-lg"
-      :required="inputRequired"
       :placeholder="inputPlaceholder"
+      :value="value"
+      v-validate="validateRules"
+      :data-vv-as="CustomLabel"
+      @blur="$emit('blur')"
+      v-model="innerValue"
     />
     <input
       v-else
@@ -18,13 +25,22 @@
       :maxlength="inputMaxLength"
       :placeholder="inputPlaceholder"
       :minlength="inputMinLength"
+      :pattern="inputPattern"
+      @blur="$emit('blur')"
+      v-validate="validateRules"
+      :data-vv-as="CustomLabel"
+      v-model="innerValue"
     />
+    <span class="error-message" v-if="errors.first(inputName)">{{
+      errors.first(inputName)
+    }}</span>
   </div>
 </template>
 
 <script>
 export default {
   name: "CustomInput",
+
   props: {
     CustomLabel: String,
     inputType: String,
@@ -33,6 +49,37 @@ export default {
     inputMaxLength: Number,
     inputMinLength: Number,
     inputPlaceholder: String,
+    value: String,
+    validateRules: String,
+    inputPattern: String,
+  },
+  methods: {
+    // this function is used to validate the input.
+    validateField() {
+      this.$validator.validateAll().then((result) => {
+        if (!result) {
+          return;
+        }
+      });
+    },
+  },
+  data: () => ({
+    innerValue: "",
+  }),
+  watch: {
+    // Handles internal model changes.
+    innerValue(newVal) {
+      this.$emit("input", newVal);
+    },
+    // Handles external model changes.
+    value(newVal) {
+      this.innerValue = newVal;
+    },
+  },
+  created() {
+    if (this.value) {
+      this.innerValue = this.value;
+    }
   },
 };
 </script>
@@ -44,6 +91,7 @@ export default {
   margin: 10px 10px 10px 0;
   text-align: left;
   border-radius: 5px;
+  align-self: start;
 }
 .form-group > label {
   color: #999999;
@@ -64,5 +112,16 @@ textarea {
   padding-top: 10px;
   height: 60px;
   resize: none;
+}
+.input-error > input,
+.input-error > textarea {
+  border: 2px solid red !important;
+}
+.input-error > label {
+  color: red;
+}
+.input-error > .error-message {
+  color: red;
+  font-size: 0.8rem;
 }
 </style>

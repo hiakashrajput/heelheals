@@ -1,15 +1,23 @@
 <template>
-  <div class="form-group">
+  <div class="form-group" :class="errors.first(inputName) ? 'input-error' : ''">
     <label>{{ this.CustomLabel }}</label>
     <select
-      v-model="selected"
       class="form-control input-lg"
-      :pattern="inputPattern"
       required
+      :name="inputName"
+      :value="value"
+      @input="updateInputValue($event.target.value)"
+      v-validate="validateRules"
+      :data-vv-as="CustomLabel"
     >
       <option disabled value="">Please select one</option>
-      <option :key="option" v-for="option in options">{{ option }}</option>
+      <option :key="option.name" v-for="option in options">
+        {{ option.name }}
+      </option>
     </select>
+    <span class="error-message" v-if="errors.first(inputName)">{{
+      errors.first(inputName)
+    }}</span>
   </div>
 </template>
 
@@ -19,13 +27,24 @@ export default {
   props: {
     CustomLabel: String,
     options: Array,
-    inputValue: String,
-    inputPattern: String,
+    validateRules: String,
+    value: String,
+    inputName: String,
   },
-  data() {
-    return {
-      selected: "",
-    };
+  methods: {
+    updateInputValue(value) {
+      this.$emit("input", value);
+    },
+    validateField() {
+      this.$validator
+        .validateAll()
+        .then((result) => {
+          if (!result) {
+            return;
+          }
+        })
+        .catch(() => {});
+    },
   },
 };
 </script>
@@ -52,5 +71,15 @@ export default {
   width: 100%;
   height: 40px;
   border-radius: inherit;
+}
+.input-error > select {
+  border: 2px solid red !important;
+}
+.input-error > label {
+  color: red;
+}
+.input-error > .error-message {
+  color: red;
+  font-size: 0.8rem;
 }
 </style>

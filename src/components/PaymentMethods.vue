@@ -1,11 +1,18 @@
 <template>
   <div class="payment-methods-container">
     <h3 class="title">Payment Method</h3>
-    <div class="payment-option">
+    <div
+      class="payment-option"
+      @click="updatePaymentMethod('payPal')"
+      :class="{ isActive: paymentMethod.type === 'payPal' }"
+    >
       <div class="radio-button-container">
-        <input type="radio" name="paymentMethod" checked="checked" /><strong>
-          PayPal</strong
-        >
+        <input
+          type="radio"
+          name="paymentMethod"
+          v-model="paymentMethod.type"
+          value="payPal"
+        /><strong> PayPal</strong>
       </div>
 
       <p>You will be redirectedto the Paypal website after submitting order</p>
@@ -14,11 +21,19 @@
         alt="PayPal"
       />
     </div>
-    <div class="payment-option">
+    <div
+      class="payment-option"
+      id="creditCard"
+      @click="updatePaymentMethod('creditCard')"
+      :class="{ isActive: paymentMethod.type === 'creditCard' }"
+    >
       <div id="credit-card-radio-button" class="radio-button-container">
-        <input type="radio" name="paymentMethod" /><strong>
-          Pay with Credit Card</strong
-        >
+        <input
+          type="radio"
+          name="paymentMethod"
+          value="creditCard"
+          v-model="paymentMethod.type"
+        /><strong> Pay with Credit Card</strong>
       </div>
       <img
         src="https://camo.githubusercontent.com/b45d680d48b4b642b19ac7308567ea61f995a566d8b2a9165def53740574f3b5/687474703a2f2f73746f726167652e6a302e686e2f6372656469742d636172642d6c6f676f732d322e706e67"
@@ -29,22 +44,32 @@
         inputName="cardNumber"
         inputType="text"
         inputmode="numeric"
+        v-model="paymentMethod.creditCardNumber"
+        :validateRules="addValidationRules('required|credit_card')"
+        ref="paymentMethodChanged"
       />
       <CustomInput
         CustomLabel="Expiration Date"
         inputName="expirationDate"
         inputType="text"
+        v-model="paymentMethod.cardExpiryDate"
         inputPlaceholder="MM/YY"
+        :validateRules="addValidationRules('required|date_format:MM/YY')"
       />
       <CustomInput
         CustomLabel="Card Security Code"
         inputName="cardSecurityCode"
         inputType="password"
-        inputMinLength="3"
-        inputMaxLength="3"
-        inputmode="numeric"
+        :inputMinLength="3"
+        :inputMaxLength="3"
+        v-model="paymentMethod.cvv"
+        :validateRules="addValidationRules('required|digits:3')"
       />
-      <a href="#">What is this?</a>
+      <a
+        ><abbr title="On the back of your card there will be a 3 digit number.">
+          What is this?</abbr
+        ></a
+      >
     </div>
     <div class="security-info-container">
       <img
@@ -62,9 +87,50 @@
 
 <script>
 import CustomInput from "./FormComponents/CustomInput.vue";
+
 export default {
   name: "PaymentMethods",
   components: { CustomInput },
+  data() {
+    return {
+      paymentMethod: {
+        type: "payPal",
+        creditCardNumber: "",
+        cvv: "",
+        cardExpiryDate: "",
+      },
+    };
+  },
+  methods: {
+    updatePaymentMethod(value) {
+      this.paymentMethod.type = value;
+    },
+    addValidationRules(validationRule) {
+      return this.paymentMethod.type === "creditCard" ? validationRule : "";
+    },
+    validationCardExpiryRules() {
+      //   var today = new Date();
+      //   var MM = today.getMonth();
+      //   var YY = today.getFullYear().toString().substr(-2);
+      //   var expiryYY = (today.getFullYear() + 30).toString().substr(-2);
+      //   |date_between:"${MM}/${YY},${MM}/${expiryYY}
+      return this.paymentMethod.type === "creditCard"
+        ? `required|date_format:MM/YY`
+        : "";
+    },
+    validateAllFields() {
+      if (this.paymentMethod.type === "creditCard") {
+        this.$refs.paymentMethodChanged.validateField();
+        this.$refs.expirationDate.validateField();
+        this.$refs.cardSecurityCode.validateField();
+      }
+    },
+    resetForm() {
+      this.paymentMethod = {
+        type: "payPal",
+      };
+    },
+  },
 };
 </script>
 
@@ -85,6 +151,9 @@ export default {
   border-radius: 5px;
   margin-bottom: 20px;
   flex-wrap: wrap;
+}
+.isActive {
+  border: 2px solid #006bd7 !important;
 }
 .payment-option .form-group {
   width: 45%;
@@ -128,6 +197,12 @@ export default {
   width: 90%;
   font-size: 1rem;
 }
+abbr {
+  cursor: pointer;
+  text-decoration: none;
+  color: #006bd7;
+}
+
 @media (min-device-width: 360px) and (max-device-width: 740px) {
   .payment-methods-container {
     width: 100%;

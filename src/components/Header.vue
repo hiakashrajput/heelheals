@@ -5,8 +5,12 @@
         <img :src="logoImg" alt="logo" />
       </div>
       <ul class="ul-menu-items">
-        <li><router-link to="/">Home</router-link></li>
-        <li><router-link to="/buy">Buy</router-link></li>
+        <li>
+          <router-link to="/" @click.native="$router.go()">Home</router-link>
+        </li>
+        <li>
+          <router-link to="/buy" @click.native="$router.go()">Buy</router-link>
+        </li>
       </ul>
     </div>
   </div>
@@ -18,7 +22,6 @@ export default {
   props: {
     logoImg: String,
   },
-  data() {},
 };
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <button class="custom-button" :class="customClass" @click="onClickHandler">
+  <button class="custom-button" :class="customClass">
     {{ buttonLabel }}
   </button>
 </template>
@@ -10,7 +10,7 @@ export default {
   props: {
     buttonLabel: { type: String, required: true },
     buttonColor: { type: String, required: true },
-    onClickHandler: { type: Function, required: true },
+    // onClickHandler: { type: Function, required: false },
     customClass: { type: String, required: false },
   },
 };

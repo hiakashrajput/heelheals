@@ -1,19 +1,10 @@
 <template>
   <div id="app">
-    <!-- <Header :logoImg="require('@/assets/logoipsum.svg')" /> -->
-    <router-view></router-view>
+    <router-view :key="$route.fullPath"></router-view>
   </div>
 </template>
 
-<script>
-// import Header from "./components/Header.vue";
-export default {
-  name: "App",
-  components: {
-    // Header,
-  },
-};
-</script>
+<script></script>
 
 <style>
 body {
@@ -30,11 +21,13 @@ body {
   margin: 0 0 5% 0;
 }
 input,
-textarea {
+textarea,
+select {
   outline: none;
 }
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   border: 2px solid blue !important;
 }
 </style>

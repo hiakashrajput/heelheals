@@ -11,9 +11,12 @@
         <label>Discount</label>- {{ formatter.format(discount) }}
       </div>
       <div class="bill-row-container warranty-info">
-        <label>Warranty(Platinum)</label>{{ formatter.format(warrantyCharge) }}
+        <label>Warranty(Platinum)</label
+        >{{ formatter.format(updatedWarrantyCharge) }}
       </div>
-      <a class="remove-warranty-text">{{ "Remove" }}</a>
+      <a class="remove-warranty-text" @click="removeWarranty()">{{
+        warrantyToggleButtonText
+      }}</a>
       <div class="bill-row-container">
         <label>Shipping</label>{{ formatter.format(shippingCharge) }}
       </div>
@@ -51,7 +54,7 @@
       </div>
       <CustomButton
         buttonColor="#006BD7"
-        :buttonLabel="'Pay ' + grandTotal"
+        v-bind:buttonLabel="'Pay ' + grandTotal"
         customClass="pay-button"
       />
     </form>
@@ -79,15 +82,6 @@ export default {
       billSummary: {
         acknowledgePrivacyPolicy: "",
         orderComment: "",
-        orderTotal: Math.round(
-          ((this.subtotal -
-            this.discount +
-            this.warrantyCharge +
-            this.shippingCharge +
-            this.tax) *
-            100) /
-            100
-        ),
       },
       formatter: new Intl.NumberFormat("en-US", {
         style: "currency",
@@ -98,35 +92,31 @@ export default {
         //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
       }),
       warrantyToggleButtonText: "Remove",
-      // initialWarrantyCharge: this.warrantyCharge,
-      // updatedWarrantyCharge: this.warrantyCharge,
-      // removeWarrantyCharge: false,
+      initialWarrantyCharge: this.warrantyCharge,
+      updatedWarrantyCharge: this.warrantyCharge,
     };
   },
   methods: {
-    // removeWarranty() {
-    //   if (this.warrantyToggleButtonText == "Remove") {
-    //     this.updatedWarrantyCharge = 0;
-    //     this.removeWarrantyCharge = true;
-    //     this.warrantyToggleButtonText = `Add for $${this.initialWarrantyCharge} only`;
-    //   } else {
-    //     this.updatedWarrantyCharge = this.initialWarrantyCharge;
-    //     this.warrantyToggleButtonText = "Remove";
-    //   }
-    // },
-    resetForm() {
-      this.billSummary = {};
+    removeWarranty() {
+      if (this.warrantyToggleButtonText == "Remove") {
+        this.updatedWarrantyCharge = 0;
+        this.warrantyToggleButtonText = `Add for $${this.initialWarrantyCharge} only`;
+      } else {
+        this.updatedWarrantyCharge = this.initialWarrantyCharge;
+        this.warrantyToggleButtonText = "Remove";
+      }
     },
     payButtonHandler() {
-      this.$emit("PayButtonClicked");
+      console.log("Pay button clicked");
+      this.$emit("PayButtonClicked", true);
     },
   },
   computed: {
-    grandTotal: function () {
+    grandTotal() {
       return this.formatter.format(
         Math.round(
           (this.subtotal +
-            this.warrantyCharge +
+            this.updatedWarrantyCharge +
             this.shippingCharge +
             this.tax -
             this.discount) *
